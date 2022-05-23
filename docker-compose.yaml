@@ -1,0 +1,29 @@
+# docker-compose.yaml
+version: '3.7'
+services:
+  hits:
+   build: .
+   image: jenkins:0.4
+   labels:
+     - "traefik.frontend.rule=HostRegexp:{catchall:.*}"
+   depends_on:
+     - redis
+   networks:
+     - public
+     - secret
+  redis:
+   image: redis:alpine
+   ports:
+    - "6379:6379"
+   volumes:
+    - redis-data:/data
+   networks:
+    - secret
+volumes:
+  redis-data:
+    driver: local
+networks:
+  secret:
+    driver: bridge
+  public:
+    driver: bridge
